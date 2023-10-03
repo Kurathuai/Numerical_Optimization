@@ -1,0 +1,24 @@
+from scipy.optimize import minimize
+
+def objective_function(x):
+    return -(x[0] * x[1] * x[2])
+
+# Constraint function
+def constraint(x):
+    return x[0]**2 + x[1]**2 + x[2]**2 - 25
+
+# Initial guess
+initial_guess = [1, 1, 1]
+
+# Define the bounds for each variable
+bounds = ((-5, 5), (-5, 5), (-5, 5))
+
+# Define the constraint
+constraint_definition = {'type': 'eq', 'fun': constraint}
+
+# Solve the constrained optimization problem
+result = minimize(objective_function, initial_guess, bounds=bounds, constraints=constraint_definition)
+
+# Display the results
+print("Optimal Solution:", result.x)
+print("Optimal Objective Value:", -result.fun)
