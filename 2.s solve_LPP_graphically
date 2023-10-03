@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_constraint(eq, label):
+    x_vals = np.linspace(0, 10, 100)
+    y_vals = (eq[2] - eq[0] * x_vals) / eq[1]
+    plt.plot(x_vals, y_vals, label=label)
+
+def plot_objective_function(c):
+    x_vals = np.linspace(0, 10, 100)
+    y_vals = (c[0] * x_vals) / -c[1]
+    plt.plot(x_vals, y_vals, label="Objective Function", linestyle='dashed')
+
+def linear_programming_graphical(c, A, b):
+    plt.figure(figsize=(8, 8))
+
+    # Plot constraints
+    for i in range(len(A)):
+        plot_constraint(A[i], f'Constraint {i + 1}')
+
+    # Plot the objective function
+    plot_objective_function(c)
+
+    # Highlight the feasible region
+    plt.fill_betweenx(np.linspace(0, 10, 100), 0, 10, color='gray', alpha=0.3, label="Feasible Region")
+
+    plt.xlim(0, 10)
+    plt.ylim(0, 10)
+    plt.xlabel("X-axis")
+    plt.ylabel("Y-axis")
+    plt.title("Linear Programming Problem - Graphical Solution")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Example:
+# Maximize: c[0] * x + c[1] * y
+c = np.array([-2, -3])
+
+# Subject to:
+# 2 * x + y <= 20
+# 4 * x - 5 * y >= -10
+# x + 2 * y <= 10
+A = np.array([[2, 1], [-4, 5], [1, 2]])
+b = np.array([20, 10, 10])
+
+linear_programming_graphical(c, A, b)
