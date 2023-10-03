@@ -1,0 +1,35 @@
+import sympy as sp
+from scipy.optimize import minimize_scalar
+import numpy as np
+
+def find_global_optimal_solution():
+    # Define the variable
+    x = sp.symbols('x')
+
+    # Define the function
+    f = -10 * sp.cos(sp.pi * x - 2.2) + (x + 1.5) * x
+
+    # Find critical points by setting the derivative to zero
+    critical_points = sp.solve(sp.diff(f, x), x)
+
+    # Evaluate the function at critical points
+    values_at_critical_points = [f.evalf(subs={x: cp}) for cp in critical_points]
+
+    # Find the index of the minimum value among the critical points
+    index_of_min_value = np.argmin(values_at_critical_points)
+
+    # The global optimal solution is the critical point corresponding to the minimum value
+    global_optimal_solution = critical_points[index_of_min_value]
+    optimal_value = values_at_critical_points[index_of_min_value]
+
+    return global_optimal_solution, optimal_value
+
+def main():
+    global_optimal_solution, optimal_value = find_global_optimal_solution()
+
+    print("Global Optimal Solution:")
+    print(f"x = {global_optimal_solution}")
+    print(f"f(x) = {optimal_value}")
+
+if __name__ == "__main__":
+    main()
