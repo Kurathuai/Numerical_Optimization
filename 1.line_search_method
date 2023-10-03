@@ -1,0 +1,57 @@
+def line_search(f, df, x0, alpha=0.01, beta=0.5, max_iter=1000, tol=1e-6):
+    """
+    Line Search Algorithm to find the optimal step size in the direction of steepest descent.
+
+    Parameters:
+    - f: Objective function.
+    - df: Gradient of the objective function.
+    - x0: Initial guess.
+    - alpha: Step size.
+    - beta: Parameter for the Armijo condition.
+    - max_iter: Maximum number of iterations.
+    - tol: Tolerance to stop the algorithm.
+
+    Returns:
+    - x_opt: Optimal solution.
+    - f_opt: Minimum value of the objective function.
+    """
+
+    x = x0
+    iteration = 0
+
+    while iteration < max_iter:
+        gradient = df(x)
+
+        # Armijo condition
+        if f(x - alpha * gradient) < f(x) - beta * alpha * gradient.dot(gradient):
+            break
+
+        # Backtracking line search
+        alpha *= 0.5
+        iteration += 1
+
+        # Check convergence
+        if np.linalg.norm(gradient) < tol:
+            break
+
+    x_opt = x - alpha * gradient
+    f_opt = f(x_opt)
+
+    return x_opt, f_opt
+
+# Example usage:
+# Define your objective function and its gradient
+def objective_function(x):
+    return x**2
+
+def gradient(x):
+    return 2 * x
+
+# Initial guess
+x0 = 3.0
+
+# Perform line search
+optimal_solution, minimum_value = line_search(objective_function, gradient, x0)
+
+print("Optimal Solution:", optimal_solution)
+print("Minimum Value:", minimum_value)
