@@ -1,0 +1,29 @@
+import sympy as sp
+
+def compute_gradient_hessian():
+    # Define the variables
+    x1, x2 = sp.symbols('x1 x2')
+
+    # Define the function
+    f = 100 * (x2 - x1**2)**2 + (1 - x1)**2
+
+    # Compute the gradient
+    gradient = [sp.diff(f, x1), sp.diff(f, x2)]
+
+    # Compute the Hessian matrix
+    hessian = [[sp.diff(gradient[i], xj) for xj in [x1, x2]] for i in [0, 1]]
+
+    return gradient, hessian
+
+def main():
+    gradient, hessian = compute_gradient_hessian()
+
+    # Display the results
+    print("Gradient:")
+    print(gradient)
+
+    print("\nHessian:")
+    print(hessian)
+
+if __name__ == "__main__":
+    main()
