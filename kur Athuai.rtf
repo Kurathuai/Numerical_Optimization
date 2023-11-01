@@ -1,0 +1,261 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2757
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red23\green186\blue251;\red252\green83\blue8;\red59\green0\blue164;
+\red0\green0\blue0;\red102\green177\blue50;\red252\green112\blue56;}
+{\*\expandedcolortbl;;\cssrgb\c0\c77905\c98860;\cssrgb\c100000\c41713\c26;\cssrgb\c30181\c13393\c70360;
+\csgray\c0\c0;\cssrgb\c46532\c73327\c25364;\cssrgb\c100000\c52407\c27938;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf2 def line_search(f, df, x0, alpha=0.01, beta=0.5, max_iter=1000, tol=1e-6):\
+    """\
+    Line Search Algorithm to find the optimal step size in the direction of steepest descent.\
+\
+    Parameters:\
+    - f: Objective function.\
+    - df: Gradient of the objective function.\
+    - x0: Initial guess.\
+    - alpha: Step size.\
+    - beta: Parameter for the Armijo condition.\
+    - max_iter: Maximum number of iterations.\
+    - tol: Tolerance to stop the algorithm.\
+\
+    Returns:\
+    - x_opt: Optimal solution.\
+    - f_opt: Minimum value of the objective function.\
+    """\
+\
+    x = x0\
+    iteration = 0\
+\
+    while iteration < max_iter:\
+        gradient = df(x)\
+\
+        # Armijo condition\
+        if f(x - alpha * gradient) < f(x) - beta * alpha * gradient.dot(gradient):\
+            break\
+\
+        # Backtracking line search\
+        alpha *= 0.5\
+        iteration += 1\
+\
+        # Check convergence\
+        if np.linalg.norm(gradient) < tol:\
+            break\
+\
+    x_opt = x - alpha * gradient\
+    f_opt = f(x_opt)\
+\
+    return x_opt, f_opt\
+\
+# Example usage:\
+# Define your objective function and its gradient\
+def objective_function(x):\
+    return x**2\
+\
+def gradient(x):\
+    return 2 * x\
+\
+# Initial guess\
+x0 = 3.0\
+\
+# Perform line search\
+optimal_solution, minimum_value = line_search(objective_function, gradient, x0)\
+\
+print("Optimal Solution:", optimal_solution)\
+print("Minimum Value:", minimum_value)\
+\
+\
+\
+\cf3 import numpy as np\
+import matplotlib.pyplot as plt\
+\
+def plot_constraint(eq, label):\
+    x_vals = np.linspace(0, 10, 100)\
+    y_vals = (eq[2] - eq[0] * x_vals) / eq[1]\
+    plt.plot(x_vals, y_vals, label=label)\
+\
+def plot_objective_function(c):\
+    x_vals = np.linspace(0, 10, 100)\
+    y_vals = (c[0] * x_vals) / -c[1]\
+    plt.plot(x_vals, y_vals, label="Objective Function", linestyle='dashed')\
+\
+def linear_programming_graphical(c, A, b):\
+    plt.figure(figsize=(8, 8))\
+\
+    # Plot constraints\
+    for i in range(len(A)):\
+        plot_constraint(A[i], f'Constraint \{i + 1\}')\
+\
+    # Plot the objective function\
+    plot_objective_function(c)\
+\
+    # Highlight the feasible region\
+    plt.fill_betweenx(np.linspace(0, 10, 100), 0, 10, color='gray', alpha=0.3, label="Feasible Region")\
+\
+    plt.xlim(0, 10)\
+    plt.ylim(0, 10)\
+    plt.xlabel("X-axis")\
+    plt.ylabel("Y-axis")\
+    plt.title("Linear Programming Problem - Graphical Solution")\
+    plt.legend()\
+    plt.grid(True)\
+    plt.show()\
+\
+# Example:\
+# Maximize: c[0] * x + c[1] * y\
+c = np.array([-2, -3])\
+\
+# Subject to:\
+# 2 * x + y <= 20\
+# 4 * x - 5 * y >= -10\
+# x + 2 * y <= 10\
+A = np.array([[2, 1], [-4, 5], [1, 2]])\
+b = np.array([20, 10, 10])\
+\
+linear_programming_graphical(c, A, b)\cf2 \
+\
+\
+\
+\
+\cf4 \cb5 import sympy as sp\
+\
+def compute_gradient_hessian():\
+    # Define the variables\
+    x1, x2 = sp.symbols('x1 x2')\
+\
+    # Define the function\
+    f = 100 * (x2 - x1**2)**2 + (1 - x1)**2\
+\
+    # Compute the gradient\
+    gradient = [sp.diff(f, x1), sp.diff(f, x2)]\
+\
+    # Compute the Hessian matrix\
+    hessian = [[sp.diff(gradient[i], xj) for xj in [x1, x2]] for i in [0, 1]]\
+\
+    return gradient, hessian\
+\
+def main():\
+    gradient, hessian = compute_gradient_hessian()\
+\
+    # Display the results\
+    print("Gradient:")\
+    print(gradient)\
+\
+    print("\\nHessian:")\
+    print(hessian)\
+\
+if __name__ == "__main__":\
+    main()\
+\
+\
+\
+\
+\
+\cf6 import sympy as sp\
+from scipy.optimize import minimize_scalar\
+import numpy as np\
+\
+def find_global_optimal_solution():\
+    # Define the variable\
+    x = sp.symbols('x')\
+\
+    # Define the function\
+    f = -10 * sp.cos(sp.pi * x - 2.2) + (x + 1.5) * x\
+\
+    # Find critical points by setting the derivative to zero\
+    critical_points = sp.solve(sp.diff(f, x), x)\
+\
+    # Evaluate the function at critical points\
+    values_at_critical_points = [f.evalf(subs=\{x: cp\}) for cp in critical_points]\
+\
+    # Find the index of the minimum value among the critical points\
+    index_of_min_value = np.argmin(values_at_critical_points)\
+\
+    # The global optimal solution is the critical point corresponding to the minimum value\
+    global_optimal_solution = critical_points[index_of_min_value]\
+    optimal_value = values_at_critical_points[index_of_min_value]\
+\
+    return global_optimal_solution, optimal_value\
+\
+def main():\
+    global_optimal_solution, optimal_value = find_global_optimal_solution()\
+\
+    print("Global Optimal Solution:")\
+    print(f"x = \{global_optimal_solution\}")\
+    print(f"f(x) = \{optimal_value\}")\
+\
+if __name__ == "__main__":\
+    main()\
+\
+\
+\cf7 import numpy as np\
+import matplotlib.pyplot as plt\
+\
+def objective_function(x):\
+    return -10 * np.cos(np.pi * x - 2.2) + (x + 1.5) * x\
+\
+def plot_function():\
+    x_vals = np.linspace(-5, 5, 100)\
+    y_vals = objective_function(x_vals)\
+\
+    plt.plot(x_vals, y_vals, label="f(x) = -10*cos(pi*x - 2.2) + (x + 1.5)*x")\
+    plt.xlabel("x")\
+    plt.ylabel("f(x)")\
+    plt.title("Graphical Representation of the Function")\
+    plt.axhline(0, color='black',linewidth=0.5)\
+    plt.axvline(0, color='black',linewidth=0.5)\
+    plt.legend()\
+    plt.grid(color = 'gray', linestyle = '--', linewidth = 0.5)\
+    plt.show()\
+\
+def find_global_optimal_solution():\
+    # Let's use a simple brute-force approach to find the minimum value\
+    x_vals = np.linspace(-5, 5, 100)\
+    y_vals = objective_function(x_vals)\
+\
+    min_index = np.argmin(y_vals)\
+    global_optimal_solution = x_vals[min_index]\
+    min_value = y_vals[min_index]\
+\
+    return global_optimal_solution, min_value\
+\
+def main():\
+    plot_function()\
+\
+    global_optimal_solution, min_value = find_global_optimal_solution()\
+    print(f"Global Optimal Solution: x = \{global_optimal_solution\}")\
+    print(f"Minimum Value: f(x) = \{min_value\}")\
+\
+if __name__ == "__main__":\
+    main()\cf6 \
+\
+\
+\
+\
+from scipy.optimize import minimize\
+\
+def objective_function(x):\
+    return -(x[0] * x[1] * x[2])\
+\
+# Constraint function\
+def constraint(x):\
+    return x[0]**2 + x[1]**2 + x[2]**2 - 25\
+\
+# Initial guess\
+initial_guess = [1, 1, 1]\
+\
+# Define the bounds for each variable\
+bounds = ((-5, 5), (-5, 5), (-5, 5))\
+\
+# Define the constraint\
+constraint_definition = \{'type': 'eq', 'fun': constraint\}\
+\
+# Solve the constrained optimization problem\
+result = minimize(objective_function, initial_guess, bounds=bounds, constraints=constraint_definition)\
+\
+# Display the results\
+print("Optimal Solution:", result.x)\
+print("Optimal Objective Value:", -result.fun)\
+\
+}
